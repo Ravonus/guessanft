@@ -141,7 +141,7 @@ export default function Home() {
         <meta property="og:description" content="PFPguessr" />
         <meta
           property="og:image"
-          content="https://pfpguessr.com/PFPguessr.png"
+          content="https://pfpguessr.com/pfpguess.png"
         />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -151,7 +151,7 @@ export default function Home() {
         <meta name="twitter:description" content="PFPguessr" />
         <meta
           name="twitter:image"
-          content="https://pfpguessr.com/PFPguessr.png"
+          content="https://pfpguessr.com/pfpguess.png"
         />
       </Head>
 
@@ -185,7 +185,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          {gameStatus === "notStarted" ? (
+          {gameStatus !== "inProgress" ? (
             <img
               alt="NFT"
               src="/aore.png"
@@ -256,11 +256,13 @@ export default function Home() {
               </>
             )}
           </div>
-          {gameStatus === "inProgress" ? (
+          {gameStatus === "inProgress" && (
             <div className="-mt-8 text-3xl text-white">
               Time Remaining: {countdown}
             </div>
-          ) : (
+          )}
+
+          {gameStatus === "notStarted" && (
             <div className="-mt-8 text-3xl text-white">
               {countdown} seconds per guess
             </div>
@@ -268,7 +270,7 @@ export default function Home() {
 
           {gameStatus === "finished" && (
             <button
-              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+              className="-mt-12 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               onClick={shareScoreOnTwitter}
             >
               Share on Twitter
