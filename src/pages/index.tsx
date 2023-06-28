@@ -225,10 +225,15 @@ export default function Home() {
               </>
             )}
           </div>
-
-          <div className="-mt-8 text-3xl text-white">
-            Time Remaining: {countdown} seconds
-          </div>
+          {gameStatus === "inProgress" ? (
+            <div className="-mt-8 text-3xl text-white">
+              Time Remaining: {countdown}
+            </div>
+          ) : (
+            <div className="-mt-8 text-3xl text-white">
+              {countdown} seconds per guess
+            </div>
+          )}
 
           {gameStatus === "finished" && (
             <button
