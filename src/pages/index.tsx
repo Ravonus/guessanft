@@ -148,8 +148,14 @@ export default function Home() {
 
     const diff =
       defaultCount == 6 ? "Easy" : defaultCount > 3 ? "Medium" : "Hard";
+    let scoreText = "";
 
-    const scoreText = `I scored ${correct}/10 in Azuki VS Elemental ${appLink} on ${diff} difficulty!`;
+    if (gameMode === gameModes.STREAK) {
+      scoreText = `I scored a streak of ${correct} in Azuki VS Elemental ${appLink}`;
+    }
+    if (gameMode === gameModes.TIMER) {
+      scoreText = `I scored ${correct}/10 in Azuki VS Elemental ${appLink} on ${diff} difficulty!`;
+    }
 
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       scoreText + `\n\n Created by ${createdBy}\n ${hashtag}`
