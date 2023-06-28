@@ -105,7 +105,6 @@ export default function Home() {
     } else {
       setGameStatus("finished");
       setCountdown(0);
-
       toast.success("Game finished!");
     }
   }
@@ -120,7 +119,7 @@ export default function Home() {
     const createdBy = "@R4vonus";
 
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      scoreText + `\n\n Created by ${createdBy}\n\n`
+      scoreText + `\n\n Created by ${createdBy}`
     )}`;
 
     window.open(tweetUrl);
