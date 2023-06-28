@@ -30,7 +30,7 @@ export default function Home() {
   useEffect(() => {
     let countdownTimer: NodeJS.Timeout;
 
-    if (countdown > 0 && shouldStartCountdown) {
+    if (countdown > 0 && shouldStartCountdown && !roundInProgress) {
       countdownTimer = setTimeout(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
