@@ -130,22 +130,24 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Guess the Collection</title>
+        <title>Guess the PFP</title>
         <meta name="description" content="PFPGuessr" />
         <link rel="icon" href="/favicon.ico" />
 
-        <meta property="og:title" content="Guess the Collection" />
-        <meta property="og:description" content="PFPGuessr" />
+        <meta property="og:url" content="https://pfpguessr.com/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Guess the PFP" />
+        <meta property="og:description" content="PFPguessr" />
         <meta
           property="og:image"
           content="https://pfpguessr.com/PFPguessr.png"
         />
-        <meta property="og:image:alt" content="PFPGuessr" />
-        <meta property="og:url" content="https://pfpguessr.com" />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Guess the Collection" />
-        <meta name="twitter:description" content="PFPGuessr" />
+        <meta property="twitter:domain" content="pfpguessr.com" />
+        <meta property="twitter:url" content="https://pfpguessr.com/" />
+        <meta name="twitter:title" content="Guess the PFP" />
+        <meta name="twitter:description" content="PFPguessr" />
         <meta
           name="twitter:image"
           content="https://pfpguessr.com/PFPguessr.png"
