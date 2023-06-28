@@ -130,166 +130,168 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Guess the PFP</title>
-        <meta name="description" content="PFPGuessr" />
-        <link rel="icon" href="/favicon.ico" />
+      <html>
+        <Head>
+          <title>Guess the PFP</title>
+          <meta name="description" content="PFPGuessr" />
+          <link rel="icon" href="/favicon.ico" />
 
-        <meta property="og:url" content="https://pfpguessr.com/" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Guess the PFP" />
-        <meta property="og:description" content="PFPguessr" />
-        <meta
-          property="og:image"
-          content="https://pfpguessr.com/pfpguess.png"
-        />
+          <meta property="og:url" content="https://pfpguessr.com/" />
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content="Guess the PFP" />
+          <meta property="og:description" content="PFPguessr" />
+          <meta
+            property="og:image"
+            content="https://pfpguessr.com/pfpguess.png"
+          />
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:url" content="pfpguessr.com/" />
-        <meta name="twitter:site" content="@R4vonus" />
-        <meta name="twitter:title" content="Guess the PFP" />
-        <meta name="twitter:description" content="PFPguessr" />
-        <meta
-          name="twitter:image"
-          content="https://pfpguessr.com/pfpguess.png"
-        />
-      </Head>
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:url" content="pfpguessr.com/" />
+          <meta name="twitter:site" content="@R4vonus" />
+          <meta name="twitter:title" content="Guess the PFP" />
+          <meta name="twitter:description" content="PFPguessr" />
+          <meta
+            name="twitter:image"
+            content="https://pfpguessr.com/pfpguess.png"
+          />
+        </Head>
 
-      <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
-        <ToastContainer />
-        <div className="container -mt-32 flex flex-col items-center justify-center gap-12 px-4 py-2">
-          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            PFPGuess<span className="text-[hsl(220,80%,70%)]">r</span>
-          </h1>
+        <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
+          <ToastContainer />
+          <div className="container -mt-32 flex flex-col items-center justify-center gap-12 px-4 py-2">
+            <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
+              PFPGuess<span className="text-[hsl(220,80%,70%)]">r</span>
+            </h1>
 
-          <div className="mt-5 flex flex-col items-center justify-center gap-4">
-            <h2 className=" text-2xl font-extrabold tracking-tight text-white sm:text-[2.5rem]">
-              Score
-            </h2>
-            <div className=" flex gap-8">
-              <div className="mx-10 flex flex-col items-center justify-center gap-2">
-                <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
-                  {answers.correct}
-                </span>
-                <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
-                  Correct
-                </span>
-              </div>
-              <div className="mx-10 flex flex-col items-center justify-center gap-2">
-                <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
-                  {answers.incorrect}
-                </span>
-                <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
-                  Incorrect
-                </span>
+            <div className="mt-5 flex flex-col items-center justify-center gap-4">
+              <h2 className=" text-2xl font-extrabold tracking-tight text-white sm:text-[2.5rem]">
+                Score
+              </h2>
+              <div className=" flex gap-8">
+                <div className="mx-10 flex flex-col items-center justify-center gap-2">
+                  <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
+                    {answers.correct}
+                  </span>
+                  <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
+                    Correct
+                  </span>
+                </div>
+                <div className="mx-10 flex flex-col items-center justify-center gap-2">
+                  <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
+                    {answers.incorrect}
+                  </span>
+                  <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
+                    Incorrect
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-          {gameStatus !== "inProgress" ? (
-            <img
-              alt="NFT"
-              src="/aore.png"
-              className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
-            />
-          ) : (
-            <img
-              alt="NFT"
-              src={nftData.image}
-              className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
-            />
-          )}
-
-          {gameStatus === "notStarted" && (
-            <button
-              className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
-              onClick={() => {
-                setGameStatus("inProgress");
-                requestNFT();
-                setShouldStartCountdown(true); // Start the countdown when the game starts
-              }}
-            >
-              Start
-            </button>
-          )}
-          {gameStatus === "finished" && (
-            <button
-              className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
-              onClick={() => {
-                setGameStatus("inProgress");
-                setCurrentRound(0);
-                setAnswers({ correct: 0, incorrect: 0 });
-                setRoundInProgress(false);
-                setRestart(true);
-              }}
-            >
-              Restart
-            </button>
-          )}
-
-          <div className="-mt-4 flex justify-center gap-4 text-white">
-            {gameStatus === "inProgress" && currentRound < 11 && (
-              <>
-                <button
-                  className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:-translate-x-2 hover:skew-y-3 hover:scale-110 hover:bg-purple-700"
-                  onClick={() => {
-                    handleGuess(
-                      "0xed5af388653567af2f388e6224dc7c4b3241c544"
-                    ).catch((err) => {
-                      console.log(err);
-                    });
-                  }}
-                >
-                  Azuki
-                </button>
-                <button
-                  className="rounded bg-purple-600 px-4 font-bold text-white shadow-xl transition duration-500 hover:translate-x-2 hover:-skew-y-3 hover:scale-110 hover:bg-purple-700"
-                  onClick={() => {
-                    handleGuess(
-                      "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e"
-                    ).catch((err) => {
-                      console.log(err);
-                    });
-                  }}
-                >
-                  Elemental
-                </button>
-              </>
+            {gameStatus !== "inProgress" ? (
+              <img
+                alt="NFT"
+                src="/aore.png"
+                className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
+              />
+            ) : (
+              <img
+                alt="NFT"
+                src={nftData.image}
+                className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
+              />
             )}
-          </div>
-          {gameStatus === "inProgress" && (
-            <div className="-mt-8 text-3xl text-white">
-              Time Remaining: {countdown}
+
+            {gameStatus === "notStarted" && (
+              <button
+                className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+                onClick={() => {
+                  setGameStatus("inProgress");
+                  requestNFT();
+                  setShouldStartCountdown(true); // Start the countdown when the game starts
+                }}
+              >
+                Start
+              </button>
+            )}
+            {gameStatus === "finished" && (
+              <button
+                className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+                onClick={() => {
+                  setGameStatus("inProgress");
+                  setCurrentRound(0);
+                  setAnswers({ correct: 0, incorrect: 0 });
+                  setRoundInProgress(false);
+                  setRestart(true);
+                }}
+              >
+                Restart
+              </button>
+            )}
+
+            <div className="-mt-4 flex justify-center gap-4 text-white">
+              {gameStatus === "inProgress" && currentRound < 11 && (
+                <>
+                  <button
+                    className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:-translate-x-2 hover:skew-y-3 hover:scale-110 hover:bg-purple-700"
+                    onClick={() => {
+                      handleGuess(
+                        "0xed5af388653567af2f388e6224dc7c4b3241c544"
+                      ).catch((err) => {
+                        console.log(err);
+                      });
+                    }}
+                  >
+                    Azuki
+                  </button>
+                  <button
+                    className="rounded bg-purple-600 px-4 font-bold text-white shadow-xl transition duration-500 hover:translate-x-2 hover:-skew-y-3 hover:scale-110 hover:bg-purple-700"
+                    onClick={() => {
+                      handleGuess(
+                        "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e"
+                      ).catch((err) => {
+                        console.log(err);
+                      });
+                    }}
+                  >
+                    Elemental
+                  </button>
+                </>
+              )}
             </div>
-          )}
+            {gameStatus === "inProgress" && (
+              <div className="-mt-8 text-3xl text-white">
+                Time Remaining: {countdown}
+              </div>
+            )}
 
-          {gameStatus === "notStarted" && (
-            <div className="-mt-8 text-3xl text-white">
-              {countdown} seconds per guess
+            {gameStatus === "notStarted" && (
+              <div className="-mt-8 text-3xl text-white">
+                {countdown} seconds per guess
+              </div>
+            )}
+
+            {gameStatus === "finished" && (
+              <button
+                className="-mt-12 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                onClick={shareScoreOnTwitter}
+              >
+                Share on Twitter
+              </button>
+            )}
+
+            <div className="text-white">
+              App created by{" "}
+              <a
+                href="https://twitter.com/R4vonus"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                @R4vonus
+              </a>
             </div>
-          )}
-
-          {gameStatus === "finished" && (
-            <button
-              className="-mt-12 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-              onClick={shareScoreOnTwitter}
-            >
-              Share on Twitter
-            </button>
-          )}
-
-          <div className="text-white">
-            App created by{" "}
-            <a
-              href="https://twitter.com/R4vonus"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline"
-            >
-              @R4vonus
-            </a>
           </div>
-        </div>
-      </main>
+        </main>
+      </html>
     </>
   );
 }
