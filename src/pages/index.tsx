@@ -22,6 +22,8 @@ export default function Home() {
   const [shouldStartCountdown, setShouldStartCountdown] = useState(false);
   const [restart, setRestart] = useState(false);
 
+  const [defaultCount, setDefaultCount] = useState(5);
+
   const [lastIncorrect, setLastIncorrect] = useState("");
 
   const nft = api.nft.getRandomNFT.useMutation();
@@ -54,7 +56,7 @@ export default function Home() {
 
         setTimeout(() => {
           // Only 5 seconds to guess
-          setCountdown(5);
+          setCountdown(defaultCount);
         }, 5000);
       })
       .catch((err) => {
@@ -99,7 +101,7 @@ export default function Home() {
         .mutateAsync()
         .then((data) => {
           setNftData(data);
-          setCountdown(5);
+          setCountdown(defaultCount);
           setShouldStartCountdown(true); // Start the countdown
           setRoundInProgress(false);
         })
@@ -111,6 +113,10 @@ export default function Home() {
       setCountdown(0);
       toast.success("Game finished!");
     }
+  }
+
+  function setDifficulty(diff: number) {
+    setDefaultCount(diff);
   }
 
   const shareScoreOnTwitter = () => {
@@ -202,16 +208,27 @@ export default function Home() {
             )}
 
             {gameStatus === "notStarted" && (
-              <button
-                className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
-                onClick={() => {
-                  setGameStatus("inProgress");
-                  requestNFT();
-                  setShouldStartCountdown(true); // Start the countdown when the game starts
-                }}
-              >
-                Start
-              </button>
+              <>
+                <button
+                  className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+                  onClick={() => {
+                    setGameStatus("inProgress");
+                    requestNFT();
+                    setShouldStartCountdown(true); // Start the countdown when the game starts
+                  }}
+                >
+                  Start
+                </button>
+
+                <select
+                  className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+                  onChange={(e) => setDifficulty(parseInt(e.target.value))}
+                >
+                  <option value="6">Easy</option>
+                  <option value="4">Medium</option>
+                  <option value="2">Hard</option>
+                </select>
+              </>
             )}
             {gameStatus === "finished" && (
               <button
@@ -266,7 +283,7 @@ export default function Home() {
 
             {gameStatus === "notStarted" && (
               <div className="-mt-8 text-3xl text-white">
-                {countdown} seconds per guess
+                {defaultCount} seconds per guess
               </div>
             )}
 
