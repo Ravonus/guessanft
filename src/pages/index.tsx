@@ -75,10 +75,14 @@ export default function Home() {
     if (roundInProgress) return; // Prevent multiple guesses in the same round
     setRoundInProgress(true); // Start a round
     if (nftData.contract === collection) {
-      toast.success("Correct!");
+      toast.success("Correct!", {
+        autoClose: 500,
+      });
       setAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
     } else {
-      toast.error("Nope!");
+      toast.error("Nope!", {
+        autoClose: 500,
+      });
       setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setLastIncorrect(nftData.image);
     }
