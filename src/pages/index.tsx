@@ -8,6 +8,12 @@ import { ToastContainer, toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
+// add game modes
+const gameModes = {
+  TIMER: "TIMER",
+  STREAK: "STREAK",
+};
+
 export default function Home() {
   const [nftData, setNftData] =
     useState<RouterOutputs["nft"]["getRandomNFT"]>();
@@ -21,6 +27,7 @@ export default function Home() {
   const [roundInProgress, setRoundInProgress] = useState(false);
   const [shouldStartCountdown, setShouldStartCountdown] = useState(false);
   const [restart, setRestart] = useState(false);
+  const [gameMode, setGameMode] = useState(gameModes.TIMER); // new state to set game mode, default is TIMER
 
   const [defaultCount, setDefaultCount] = useState(5);
 
@@ -30,6 +37,8 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    if (gameMode === gameModes.STREAK) return;
+
     let countdownTimer: NodeJS.Timeout;
 
     if (countdown > 0 && shouldStartCountdown) {
@@ -87,6 +96,14 @@ export default function Home() {
       });
       setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setLastIncorrect(nftData.image);
+
+      // If game mode is STREAK and the answer is incorrect, finish the game
+      if (gameMode === gameModes.STREAK) {
+        setGameStatus("finished");
+        setCountdown(0);
+        toast.success("Game finished!");
+        return;
+      }
     }
 
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 0.5 seconds before requesting a new NFT
@@ -246,13 +263,25 @@ export default function Home() {
             {(gameStatus === "notStarted" || gameStatus === "finished") && (
               <select
                 className="-mt-5 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
-                onChange={(e) => setDifficulty(parseInt(e.target.value))}
+                onChange={(e) => setGameMode(e.target.value)}
               >
-                <option value="6">Easy</option>
-                <option value="4">Medium</option>
-                <option value="2">Hard</option>
+                <option value={gameModes.TIMER}>Timer Mode</option>
+                <option value={gameModes.STREAK}>Streak Mode</option>
               </select>
             )}
+
+            {(gameStatus === "notStarted" || gameStatus === "finished") &&
+              gameMode !== "STREAK" && (
+                <select
+                  className="-mt-5 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+                  onChange={(e) => setDifficulty(parseInt(e.target.value))}
+                >
+                  <option value="6">Easy</option>
+                  <option value="4">Medium</option>
+                  <option value="2">Hard</option>
+                  <option value="45">IRLAlpha</option>
+                </select>
+              )}
 
             <div className="-mt-4 flex justify-center gap-4 text-white">
               {gameStatus === "inProgress" && currentRound < 11 && (
@@ -284,16 +313,21 @@ export default function Home() {
                 </>
               )}
             </div>
-            {gameStatus === "inProgress" && (
-              <div className="-mt-8 text-3xl text-white">
-                Time Remaining: {countdown}
-              </div>
-            )}
 
-            {gameStatus === "notStarted" && (
-              <div className="-mt-8 text-3xl text-white">
-                {defaultCount} seconds per guess
-              </div>
+            {gameMode === "TIMER" && (
+              <>
+                {" "}
+                {gameStatus === "inProgress" && (
+                  <div className="-mt-8 text-3xl text-white">
+                    Time Remaining: {countdown}
+                  </div>
+                )}
+                {gameStatus === "notStarted" && (
+                  <div className="-mt-8 text-3xl text-white">
+                    {defaultCount} seconds per guess
+                  </div>
+                )}
+              </>
             )}
 
             {gameStatus === "finished" && (
