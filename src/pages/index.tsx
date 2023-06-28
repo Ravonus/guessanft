@@ -144,9 +144,9 @@ export default function Home() {
         />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="pfpguessr.com" />
-        <meta property="twitter:url" content="https://pfpguessr.com/" />
-        <meta property="twitter:site" content="@R4vonus" />
+        <meta name="twitter:domain" content="pfpguessr.com" />
+        <meta name="twitter:url" content="https://pfpguessr.com/" />
+        <meta name="twitter:site" content="@R4vonus" />
         <meta name="twitter:title" content="Guess the PFP" />
         <meta name="twitter:description" content="PFPguessr" />
         <meta
