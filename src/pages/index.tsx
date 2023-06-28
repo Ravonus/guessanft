@@ -217,7 +217,8 @@ export default function Home() {
                   className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
                   onClick={() => {
                     setGameStatus("inProgress");
-                    requestNFT();
+                    //requestNFT();
+                    setCountdown(defaultCount);
                     setShouldStartCountdown(true); // Start the countdown when the game starts
                   }}
                 >
@@ -235,6 +236,7 @@ export default function Home() {
                   setAnswers({ correct: 0, incorrect: 0 });
                   setRoundInProgress(false);
                   setRestart(true);
+                  setCountdown(defaultCount);
                 }}
               >
                 Restart
