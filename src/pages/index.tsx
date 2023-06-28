@@ -3,10 +3,17 @@ import Head from "next/head";
 import Link from "next/link";
 import { api, type RouterOutputs } from "~/utils/api";
 import { useRouter } from "next/router";
-
+import { type Socket, io } from "socket.io-client";
+import { type AppType } from "next/app";
 import { ToastContainer, toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
+
+//their name needs to be the record to the object
+
+//change above to a record not interface
+
+type UserVotes = Record<string, boolean>;
 
 // add game modes
 const gameModes = {
@@ -29,12 +36,88 @@ export default function Home() {
   const [restart, setRestart] = useState(false);
   const [gameMode, setGameMode] = useState(gameModes.TIMER); // new state to set game mode, default is TIMER
 
+  const [azukiVotes, setAzukiVotes] = useState(0);
+  const [elementalVotes, setElementalVotes] = useState(0);
+
+  const [userVotes, setUserVotes] = useState<UserVotes>({});
+
   const [defaultCount, setDefaultCount] = useState(5);
 
   const [lastIncorrect, setLastIncorrect] = useState("");
 
+  const [azukiWidth, setAzukiWidth] = useState(100);
+  const [elementalWidth, setElementalWidth] = useState(100);
+
+  const [socket, setSocket] = useState<Socket>();
+
   const nft = api.nft.getRandomNFT.useMutation();
   const router = useRouter();
+
+  //see if ?begin is in the url
+
+  const begin = router.query.begin ? router.query.begin : false;
+
+  useEffect(() => {
+    const totalVotes = azukiVotes + elementalVotes;
+    console.log(totalVotes);
+    setAzukiWidth(totalVotes > 0 ? (azukiVotes / totalVotes) * 100 : 0);
+    setElementalWidth(totalVotes > 0 ? (elementalVotes / totalVotes) * 100 : 0);
+  }, [azukiVotes, elementalVotes]);
+
+  useEffect(() => {
+    if (!begin) return;
+    // Connect to the Socket.IO server
+    setSocket(io("https://guessrsocket-7c7704e9cd49.herokuapp.com/"));
+
+    // Handle the 'chat message' event
+
+    // Disconnect when the component unmounts
+    return () => {
+      socket?.disconnect();
+    };
+  }, [begin]);
+
+  useEffect(() => {
+    //first remvoe listener
+
+    if (gameStatus !== "inProgress") return;
+
+    socket?.off("azuki");
+
+    socket?.on("azuki", (msg: { user: string; isAzuki: boolean }) => {
+      //if user has already voted change it, if not add it
+      //we need to check if userVotes[msg.user] exists (Not if its true or false)
+
+      if (userVotes[msg.user] !== undefined) {
+        if (userVotes[msg.user] === msg.isAzuki) {
+          //if they voted the same, do nothing
+          return;
+        } else {
+          //if they voted different, change it
+          setUserVotes((prev) => ({ ...prev, [msg.user]: msg.isAzuki }));
+          if (msg.isAzuki) {
+            setAzukiVotes((prev) => prev + 1);
+            setElementalVotes((prev) => prev - 1);
+          } else {
+            setAzukiVotes((prev) => prev - 1);
+            setElementalVotes((prev) => prev + 1);
+          }
+        }
+      } else {
+        console.log("ELSED", userVotes);
+        //if they haven't voted, add it
+        setUserVotes((prev) => ({ ...prev, [msg.user]: msg.isAzuki }));
+        if (msg.isAzuki) setAzukiVotes((prev) => prev + 1);
+        else setElementalVotes((prev) => prev + 1);
+      }
+
+      toast.success(
+        `${msg.user} voted for ${msg.isAzuki ? "Azuki" : "Elemental"}`
+      );
+    });
+
+    console.log(socket);
+  }, [socket, userVotes, gameStatus]);
 
   useEffect(() => {
     if (gameMode === gameModes.STREAK) return;
@@ -47,7 +130,32 @@ export default function Home() {
       }, 1000);
     } else if (countdown === 0 && shouldStartCountdown && !roundInProgress) {
       // Timeout expired, request a new NFT
-      setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
+
+      if (defaultCount === 45) {
+        //determine which one one
+        const azuki = azukiVotes;
+        const elemental = elementalVotes;
+
+        if (
+          azuki > elemental &&
+          nftData?.contract === "0xed5af388653567af2f388e6224dc7c4b3241c544"
+        ) {
+          setAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
+        } else if (
+          azuki < elemental &&
+          nftData?.contract === "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e"
+        ) {
+          setAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
+        } else {
+          setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
+        }
+
+        setAzukiVotes(0);
+        setElementalVotes(0);
+        setUserVotes({});
+      } else {
+        setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
+      }
       requestNFT();
       setShouldStartCountdown(false); // Prevent the countdown from starting automatically
     }
@@ -55,7 +163,13 @@ export default function Home() {
     return () => {
       clearTimeout(countdownTimer);
     };
-  }, [countdown, shouldStartCountdown]);
+  }, [
+    countdown,
+    shouldStartCountdown,
+    defaultCount,
+    gameMode,
+    roundInProgress,
+  ]);
 
   if (nft.isIdle && !nftData) {
     nft
@@ -168,129 +282,159 @@ export default function Home() {
 
   return (
     <>
-      <html>
-        <Head>
-          <title>Guess the PFP</title>
-          <meta name="description" content="PFPGuessr" />
-          <link rel="icon" href="/favicon.ico" />
+      <Head>
+        <title>Guess the PFP</title>
+        <meta name="description" content="PFPGuessr" />
+        <link rel="icon" href="/favicon.ico" />
 
-          <meta property="og:url" content="https://pfpguessr.com/" />
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content="Guess the PFP" />
-          <meta property="og:description" content="PFPguessr" />
-          <meta
-            property="og:image"
-            content="https://pfpguessr.com/pfpguess.png"
-          />
+        <meta property="og:url" content="https://pfpguessr.com/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Guess the PFP" />
+        <meta property="og:description" content="PFPguessr" />
+        <meta
+          property="og:image"
+          content="https://pfpguessr.com/pfpguess.png"
+        />
 
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:url" content="pfpguessr.com/" />
-          <meta name="twitter:site" content="@R4vonus" />
-          <meta name="twitter:title" content="Guess the PFP" />
-          <meta name="twitter:description" content="PFPguessr" />
-          <meta
-            name="twitter:image"
-            content="https://pfpguessr.com/pfpguess.png"
-          />
-        </Head>
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="pfpguessr.com/" />
+        <meta name="twitter:site" content="@R4vonus" />
+        <meta name="twitter:title" content="Guess the PFP" />
+        <meta name="twitter:description" content="PFPguessr" />
+        <meta
+          name="twitter:image"
+          content="https://pfpguessr.com/pfpguess.png"
+        />
+      </Head>
 
-        <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
-          <ToastContainer />
-          <div className="container -mt-32 flex flex-col items-center justify-center gap-12 px-4 py-2">
-            <div className="mt-5 flex flex-col items-center justify-center gap-4">
-              <h2 className=" text-2xl font-extrabold tracking-tight text-white sm:text-[2.5rem]">
-                Score
-              </h2>
-              <div className=" flex gap-8">
-                <div className="mx-10 flex flex-col items-center justify-center gap-2">
-                  <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
-                    {answers.correct}
-                  </span>
-                  <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
-                    Correct
-                  </span>
-                </div>
-                <div className="mx-10 flex flex-col items-center justify-center gap-2">
-                  <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
-                    {answers.incorrect}
-                  </span>
-                  <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
-                    Incorrect
-                  </span>
+      <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
+        <ToastContainer />
+        <div className="container -mt-32 flex flex-col items-center justify-center gap-12 px-4 py-2">
+          <div className="mt-5 flex flex-col items-center justify-center gap-4">
+            {begin && (
+              <div className="text-white">
+                <div style={{ display: "flex", width: "35vw", height: "20px" }}>
+                  <div
+                    style={{
+                      backgroundColor: "red",
+                      width: `${azukiWidth}%`,
+                      display: "flex",
+                      justifyContent: "center", // Centers text horizontally
+                      alignItems: "center", // Centers text vertically
+                    }}
+                  >
+                    {azukiWidth > 0 && <span>Azuki</span>}
+                  </div>
+                  <div
+                    style={{
+                      backgroundColor: "blue",
+                      width: `${elementalWidth}%`,
+                      display: "flex",
+                      justifyContent: "center", // Centers text horizontally
+                      alignItems: "center", // Centers text vertically
+                    }}
+                  >
+                    {elementalWidth > 0 && <span>Elemental</span>}
+                  </div>
                 </div>
               </div>
+            )}
+
+            <h2 className=" text-2xl font-extrabold tracking-tight text-white sm:text-[2.5rem]">
+              Score
+            </h2>
+            <div className=" flex gap-8">
+              <div className="mx-10 flex flex-col items-center justify-center gap-2">
+                <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
+                  {answers.correct}
+                </span>
+                <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
+                  Correct
+                </span>
+              </div>
+              <div className="mx-10 flex flex-col items-center justify-center gap-2">
+                <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
+                  {answers.incorrect}
+                </span>
+                <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
+                  Incorrect
+                </span>
+              </div>
             </div>
-            {gameStatus !== "inProgress" ? (
-              <img
-                alt="NFT"
-                src="/aore.png"
-                className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
-              />
-            ) : (
-              <img
-                alt="NFT"
-                src={nftData.image}
-                className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
-              />
-            )}
+          </div>
+          {gameStatus !== "inProgress" ? (
+            <img
+              alt="NFT"
+              src="/aore.png"
+              className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
+            />
+          ) : (
+            <img
+              alt="NFT"
+              src={nftData.image}
+              className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
+            />
+          )}
 
-            {gameStatus === "notStarted" && (
-              <>
-                <button
-                  className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
-                  onClick={() => {
-                    setGameStatus("inProgress");
-                    //requestNFT();
-                    setCountdown(defaultCount);
-                    setShouldStartCountdown(true); // Start the countdown when the game starts
-                  }}
-                >
-                  Start
-                </button>
-              </>
-            )}
-
-            {gameStatus === "finished" && (
+          {gameStatus === "notStarted" && (
+            <>
               <button
                 className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
                 onClick={() => {
                   setGameStatus("inProgress");
-                  setCurrentRound(0);
-                  setAnswers({ correct: 0, incorrect: 0 });
-                  setRoundInProgress(false);
-                  setRestart(true);
+                  //requestNFT();
                   setCountdown(defaultCount);
+                  setShouldStartCountdown(true); // Start the countdown when the game starts
                 }}
               >
-                Restart
+                Start
               </button>
-            )}
+            </>
+          )}
 
-            {(gameStatus === "notStarted" || gameStatus === "finished") && (
+          {gameStatus === "finished" && (
+            <button
+              className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+              onClick={() => {
+                setGameStatus("inProgress");
+                setCurrentRound(0);
+                setAnswers({ correct: 0, incorrect: 0 });
+                setRoundInProgress(false);
+                setRestart(true);
+                setCountdown(defaultCount);
+              }}
+            >
+              Restart
+            </button>
+          )}
+
+          {(gameStatus === "notStarted" || gameStatus === "finished") && (
+            <select
+              className="-mt-5 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+              onChange={(e) => setGameMode(e.target.value)}
+            >
+              <option value={gameModes.TIMER}>Timer Mode</option>
+              <option value={gameModes.STREAK}>Streak Mode</option>
+            </select>
+          )}
+
+          {(gameStatus === "notStarted" || gameStatus === "finished") &&
+            gameMode !== "STREAK" && (
               <select
                 className="-mt-5 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
-                onChange={(e) => setGameMode(e.target.value)}
+                onChange={(e) => setDifficulty(parseInt(e.target.value))}
               >
-                <option value={gameModes.TIMER}>Timer Mode</option>
-                <option value={gameModes.STREAK}>Streak Mode</option>
+                <option value="6">Easy</option>
+                <option value="4">Medium</option>
+                <option value="2">Hard</option>
+                {begin && <option value="45">IRLAlpha</option>}
               </select>
             )}
 
-            {(gameStatus === "notStarted" || gameStatus === "finished") &&
-              gameMode !== "STREAK" && (
-                <select
-                  className="-mt-5 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
-                  onChange={(e) => setDifficulty(parseInt(e.target.value))}
-                >
-                  <option value="6">Easy</option>
-                  <option value="4">Medium</option>
-                  <option value="2">Hard</option>
-                  <option value="45">IRLAlpha</option>
-                </select>
-              )}
-
-            <div className="-mt-4 flex justify-center gap-4 text-white">
-              {gameStatus === "inProgress" && currentRound < 11 && (
+          <div className="-mt-4 flex justify-center gap-4 text-white">
+            {gameStatus === "inProgress" &&
+              currentRound < 11 &&
+              defaultCount !== 45 && (
                 <>
                   <button
                     className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:-translate-x-2 hover:skew-y-3 hover:scale-110 hover:bg-purple-700"
@@ -318,47 +462,46 @@ export default function Home() {
                   </button>
                 </>
               )}
-            </div>
-
-            {gameMode === "TIMER" && (
-              <>
-                {" "}
-                {gameStatus === "inProgress" && (
-                  <div className="-mt-8 text-3xl text-white">
-                    Time Remaining: {countdown}
-                  </div>
-                )}
-                {gameStatus === "notStarted" && (
-                  <div className="-mt-8 text-3xl text-white">
-                    {defaultCount} seconds per guess
-                  </div>
-                )}
-              </>
-            )}
-
-            {gameStatus === "finished" && (
-              <button
-                className="-mt-12 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                onClick={shareScoreOnTwitter}
-              >
-                Share on Twitter
-              </button>
-            )}
-
-            <div className="text-white">
-              App created by{" "}
-              <a
-                href="https://twitter.com/R4vonus"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-              >
-                @R4vonus
-              </a>
-            </div>
           </div>
-        </main>
-      </html>
+
+          {gameMode === "TIMER" && (
+            <>
+              {" "}
+              {gameStatus === "inProgress" && (
+                <div className="-mt-8 text-3xl text-white">
+                  Time Remaining: {countdown}
+                </div>
+              )}
+              {gameStatus === "notStarted" && (
+                <div className="-mt-8 text-3xl text-white">
+                  {defaultCount} seconds per guess
+                </div>
+              )}
+            </>
+          )}
+
+          {gameStatus === "finished" && (
+            <button
+              className="-mt-12 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+              onClick={shareScoreOnTwitter}
+            >
+              Share on Twitter
+            </button>
+          )}
+
+          <div className="text-white">
+            App created by{" "}
+            <a
+              href="https://twitter.com/R4vonus"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              @R4vonus
+            </a>
+          </div>
+        </div>
+      </main>
     </>
   );
 }
