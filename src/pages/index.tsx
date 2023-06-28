@@ -129,7 +129,6 @@ export default function Home() {
 
   return (
     <>
-      <ToastContainer />
       <Head>
         <title>Guess the Collection</title>
         <meta name="description" content="PFPGuessr" />
@@ -137,17 +136,24 @@ export default function Home() {
 
         <meta property="og:title" content="Guess the Collection" />
         <meta property="og:description" content="PFPGuessr" />
-        <meta property="og:image" content="https://pfpguessr.com/image.jpg" />
+        <meta
+          property="og:image"
+          content="https://pfpguessr.com/PFPguessr.png"
+        />
         <meta property="og:image:alt" content="PFPGuessr" />
         <meta property="og:url" content="https://pfpguessr.com" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Guess the Collection" />
         <meta name="twitter:description" content="PFPGuessr" />
-        <meta name="twitter:image" content="https://pfpguessr.com/image.jpg" />
+        <meta
+          name="twitter:image"
+          content="https://pfpguessr.com/PFPguessr.png"
+        />
       </Head>
 
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
+        <ToastContainer />
         <div className="container -mt-64 flex flex-col items-center justify-center gap-12 px-4 py-2">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             PFPGuess<span className="text-[hsl(220,80%,70%)]">r</span>
