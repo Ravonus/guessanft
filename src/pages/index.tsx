@@ -107,15 +107,16 @@ export default function Home() {
   }
 
   const shareScoreOnTwitter = () => {
-    const scoreText = `My score in the PFPGuessr:`;
+    // I scored 10/10 in Azuki VS Elemental PFPguessr.com
     const correct = `Correct: ${answers.correct}`;
     const incorrect = `Incorrect: ${answers.incorrect}`;
+
     const appLink = "https://pfpguessr.com";
+
+    const scoreText = `I scored ${correct}/${incorrect} in Azuki VS Elemental ${appLink}`;
     const createdBy = "@R4vonus";
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      scoreText +
-        `\n${correct}\n${incorrect}` +
-        `\n\nPlay the game at ${appLink}\nCreated by ${createdBy}`
+      scoreText + `\n\n Created by ${createdBy}`
     )}`;
     window.open(tweetUrl);
   };
@@ -131,8 +132,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+      <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
+        <div className="container -mt-64 flex flex-col items-center justify-center gap-12 px-4 py-2">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Guess the <span className="text-[hsl(220,80%,70%)]">NFT</span>
           </h1>
@@ -170,7 +171,7 @@ export default function Home() {
             </button>
           )}
 
-          <div className="flex justify-center gap-4 text-white">
+          <div className="-mt-4 flex justify-center gap-4 text-white">
             {gameStatus === "inProgress" && currentRound < 11 && (
               <>
                 <button
@@ -186,7 +187,7 @@ export default function Home() {
                   Azuki
                 </button>
                 <button
-                  className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:translate-x-2 hover:-skew-y-3 hover:scale-110 hover:bg-purple-700"
+                  className="rounded bg-purple-600 px-4 font-bold text-white shadow-xl transition duration-500 hover:translate-x-2 hover:-skew-y-3 hover:scale-110 hover:bg-purple-700"
                   onClick={() => {
                     handleGuess(
                       "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e"
@@ -201,20 +202,20 @@ export default function Home() {
             )}
           </div>
 
-          <div className="mt-4 text-3xl text-white">
+          <div className="-mt-8 text-3xl text-white">
             Time Remaining: {countdown} seconds
           </div>
 
           {gameStatus === "finished" && (
             <button
-              className="mt-8 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               onClick={shareScoreOnTwitter}
             >
               Share on Twitter
             </button>
           )}
 
-          <div className="mt-8 text-white">
+          <div className="text-white">
             App created by{" "}
             <a
               href="https://twitter.com/R4vonus"
@@ -231,7 +232,7 @@ export default function Home() {
           <h2 className=" text-2xl font-extrabold tracking-tight text-white sm:text-[2.5rem]">
             Score
           </h2>
-          <div className=" my-8 flex gap-8">
+          <div className=" flex gap-8">
             <div className="mx-10 flex flex-col items-center justify-center gap-2">
               <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
                 {answers.correct}
