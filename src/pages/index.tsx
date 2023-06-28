@@ -125,10 +125,14 @@ export default function Home() {
 
     const appLink = "https://pfpguessr.com";
 
-    const scoreText = `I scored ${correct}/10 in Azuki VS Elemental ${appLink}`;
     const createdBy = "@R4vonus";
 
     const hashtag = "#AzukiVsElemental";
+
+    const diff =
+      defaultCount == 6 ? "Easy" : defaultCount > 3 ? "Medium" : "Hard";
+
+    const scoreText = `I scored ${correct}/10 in Azuki VS Elemental ${appLink} on ${diff} difficulty!`;
 
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       scoreText + `\n\n Created by ${createdBy}\n ${hashtag}`
@@ -219,17 +223,9 @@ export default function Home() {
                 >
                   Start
                 </button>
-
-                <select
-                  className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
-                  onChange={(e) => setDifficulty(parseInt(e.target.value))}
-                >
-                  <option value="6">Easy</option>
-                  <option value="4">Medium</option>
-                  <option value="2">Hard</option>
-                </select>
               </>
             )}
+
             {gameStatus === "finished" && (
               <button
                 className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
@@ -243,6 +239,17 @@ export default function Home() {
               >
                 Restart
               </button>
+            )}
+
+            {(gameStatus === "notStarted" || gameStatus === "finished") && (
+              <select
+                className="-mt-5 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+                onChange={(e) => setDifficulty(parseInt(e.target.value))}
+              >
+                <option value="6">Easy</option>
+                <option value="4">Medium</option>
+                <option value="2">Hard</option>
+              </select>
             )}
 
             <div className="-mt-4 flex justify-center gap-4 text-white">
