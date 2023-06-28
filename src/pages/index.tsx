@@ -152,6 +152,7 @@ export default function Home() {
           name="twitter:image"
           content="https://pfpguessr.com/PFPguessr.png"
         />
+        <meta name="twitter:url" content={`https://pfpguessr.com/`} />
       </Head>
 
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
