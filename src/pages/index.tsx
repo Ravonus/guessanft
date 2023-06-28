@@ -163,6 +163,29 @@ export default function Home() {
             PFPGuess<span className="text-[hsl(220,80%,70%)]">r</span>
           </h1>
 
+          <div className="mt-5 flex flex-col items-center justify-center gap-4">
+            <h2 className=" text-2xl font-extrabold tracking-tight text-white sm:text-[2.5rem]">
+              Score
+            </h2>
+            <div className=" flex gap-8">
+              <div className="mx-10 flex flex-col items-center justify-center gap-2">
+                <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
+                  {answers.correct}
+                </span>
+                <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
+                  Correct
+                </span>
+              </div>
+              <div className="mx-10 flex flex-col items-center justify-center gap-2">
+                <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
+                  {answers.incorrect}
+                </span>
+                <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
+                  Incorrect
+                </span>
+              </div>
+            </div>
+          </div>
           <img
             alt="NFT"
             src={nftData.image}
@@ -255,30 +278,6 @@ export default function Home() {
             >
               @R4vonus
             </a>
-          </div>
-        </div>
-
-        <div className="mt-5 flex flex-col items-center justify-center gap-4">
-          <h2 className=" text-2xl font-extrabold tracking-tight text-white sm:text-[2.5rem]">
-            Score
-          </h2>
-          <div className=" flex gap-8">
-            <div className="mx-10 flex flex-col items-center justify-center gap-2">
-              <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
-                {answers.correct}
-              </span>
-              <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
-                Correct
-              </span>
-            </div>
-            <div className="mx-10 flex flex-col items-center justify-center gap-2">
-              <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
-                {answers.incorrect}
-              </span>
-              <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
-                Incorrect
-              </span>
-            </div>
           </div>
         </div>
       </main>
