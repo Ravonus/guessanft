@@ -94,13 +94,18 @@ export default function Home() {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            Guess the <span className="text-[hsl(280,100%,70%)]">NFT</span>
+            Guess the <span className="text-[hsl(220,80%,70%)]">NFT</span>
           </h1>
 
-          <img alt="NFT" src={nftData.image} />
+          <img
+            alt="NFT"
+            src={nftData.image}
+            className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
+          />
 
           <div className="flex justify-center gap-4 text-white">
             <button
+              className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:-translate-x-2 hover:skew-y-3 hover:scale-110 hover:bg-purple-700"
               onClick={() =>
                 handleGuess("0xed5af388653567af2f388e6224dc7c4b3241c544")
               }
@@ -108,6 +113,7 @@ export default function Home() {
               Azuki
             </button>
             <button
+              className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:translate-x-2 hover:-skew-y-3 hover:scale-110 hover:bg-purple-700"
               onClick={() =>
                 handleGuess("0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e")
               }
