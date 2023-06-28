@@ -159,10 +159,6 @@ export default function Home() {
         <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
           <ToastContainer />
           <div className="container -mt-32 flex flex-col items-center justify-center gap-12 px-4 py-2">
-            <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-              PFPGuess<span className="text-[hsl(220,80%,70%)]">r</span>
-            </h1>
-
             <div className="mt-5 flex flex-col items-center justify-center gap-4">
               <h2 className=" text-2xl font-extrabold tracking-tight text-white sm:text-[2.5rem]">
                 Score
