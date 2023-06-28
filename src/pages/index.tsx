@@ -16,6 +16,11 @@ export default function Home() {
     incorrect: 0,
   });
   const [countdown, setCountdown] = useState(5);
+  const [gameStatus, setGameStatus] = useState("notStarted"); // or "inProgress" or "finished"
+  const [currentRound, setCurrentRound] = useState(0);
+  const [roundInProgress, setRoundInProgress] = useState(false);
+  const [shouldStartCountdown, setShouldStartCountdown] = useState(false);
+  const [restart, setRestart] = useState(false);
 
   const nft = api.nft.getRandomNFT.useMutation();
   const router = useRouter();
@@ -23,20 +28,21 @@ export default function Home() {
   useEffect(() => {
     let countdownTimer: NodeJS.Timeout;
 
-    if (countdown > 0) {
+    if (countdown > 0 && shouldStartCountdown) {
       countdownTimer = setTimeout(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
-    } else {
+    } else if (countdown === 0 && shouldStartCountdown && !roundInProgress) {
       // Timeout expired, request a new NFT
       setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
       requestNFT();
+      setShouldStartCountdown(false); // Prevent the countdown from starting automatically
     }
 
     return () => {
       clearTimeout(countdownTimer);
     };
-  }, [countdown]);
+  }, [countdown, shouldStartCountdown]);
 
   if (nft.isIdle && !nftData) {
     nft
@@ -54,9 +60,18 @@ export default function Home() {
       });
   }
 
-  const handleGuess = (collection: string) => {
-    if (!nftData) return;
+  useEffect(() => {
+    if (restart) requestNFT();
+    setRestart(false);
+  }, [restart]);
 
+  const handleGuess = async (collection: string) => {
+    if (currentRound > 10) {
+      return;
+    }
+    if (!nftData) return;
+    if (roundInProgress) return; // Prevent multiple guesses in the same round
+    setRoundInProgress(true); // Start a round
     if (nftData.contract === collection) {
       toast.success("Correct!");
       setAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
@@ -65,27 +80,42 @@ export default function Home() {
       setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
     }
 
-    setTimeout(() => {
-      requestNFT();
-    }, 500);
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 0.5 seconds before requesting a new NFT
+    requestNFT();
   };
 
   function requestNFT() {
-    nft
-      .mutateAsync()
-      .then((data) => {
-        setNftData(data);
-        setCountdown(5);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (currentRound < 10) {
+      setCurrentRound((prevRound) => prevRound + 1); // Go to the next round
+      nft
+        .mutateAsync()
+        .then((data) => {
+          setNftData(data);
+          setCountdown(5);
+          setShouldStartCountdown(true); // Start the countdown
+          setRoundInProgress(false);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setGameStatus("finished");
+      setCountdown(0);
+      setShouldStartCountdown(false);
+      toast.success("Game finished!");
+    }
   }
 
   const shareScoreOnTwitter = () => {
-    const scoreText = `My score in the Guess the NFT Collection game: Correct - ${answers.correct}, Incorrect - ${answers.incorrect}`;
+    const scoreText = `My score in the PFPGuessr:`;
+    const correct = `Correct: ${answers.correct}`;
+    const incorrect = `Incorrect: ${answers.incorrect}`;
+    const appLink = "https://pfpguessr.com";
+    const createdBy = "@R4vonus";
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      scoreText
+      scoreText +
+        `\n${correct}\n${incorrect}` +
+        `\n\nPlay the game at ${appLink}\nCreated by ${createdBy}`
     )}`;
     window.open(tweetUrl);
   };
@@ -113,35 +143,88 @@ export default function Home() {
             className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
           />
 
+          {gameStatus === "notStarted" && (
+            <button
+              className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+              onClick={() => {
+                setGameStatus("inProgress");
+                requestNFT();
+                setShouldStartCountdown(true); // Start the countdown when the game starts
+              }}
+            >
+              Start
+            </button>
+          )}
+          {gameStatus === "finished" && (
+            <button
+              className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+              onClick={() => {
+                setGameStatus("inProgress");
+                setCurrentRound(0);
+                setAnswers({ correct: 0, incorrect: 0 });
+                setRoundInProgress(false);
+                setRestart(true);
+              }}
+            >
+              Restart
+            </button>
+          )}
+
           <div className="flex justify-center gap-4 text-white">
-            <button
-              className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:-translate-x-2 hover:skew-y-3 hover:scale-110 hover:bg-purple-700"
-              onClick={() =>
-                handleGuess("0xed5af388653567af2f388e6224dc7c4b3241c544")
-              }
-            >
-              Azuki
-            </button>
-            <button
-              className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:translate-x-2 hover:-skew-y-3 hover:scale-110 hover:bg-purple-700"
-              onClick={() =>
-                handleGuess("0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e")
-              }
-            >
-              Elemental
-            </button>
+            {gameStatus === "inProgress" && currentRound < 11 && (
+              <>
+                <button
+                  className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:-translate-x-2 hover:skew-y-3 hover:scale-110 hover:bg-purple-700"
+                  onClick={() => {
+                    handleGuess(
+                      "0xed5af388653567af2f388e6224dc7c4b3241c544"
+                    ).catch((err) => {
+                      console.log(err);
+                    });
+                  }}
+                >
+                  Azuki
+                </button>
+                <button
+                  className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:translate-x-2 hover:-skew-y-3 hover:scale-110 hover:bg-purple-700"
+                  onClick={() => {
+                    handleGuess(
+                      "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e"
+                    ).catch((err) => {
+                      console.log(err);
+                    });
+                  }}
+                >
+                  Elemental
+                </button>
+              </>
+            )}
           </div>
 
           <div className="mt-4 text-3xl text-white">
             Time Remaining: {countdown} seconds
           </div>
 
-          <button
-            className="mt-8 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-            onClick={shareScoreOnTwitter}
-          >
-            Share on Twitter
-          </button>
+          {gameStatus === "finished" && (
+            <button
+              className="mt-8 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+              onClick={shareScoreOnTwitter}
+            >
+              Share on Twitter
+            </button>
+          )}
+
+          <div className="mt-8 text-white">
+            App created by{" "}
+            <a
+              href="https://twitter.com/R4vonus"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              @R4vonus
+            </a>
+          </div>
         </div>
 
         <div className="mt-5 flex flex-col items-center justify-center gap-4">
