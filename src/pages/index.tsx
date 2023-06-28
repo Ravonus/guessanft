@@ -30,7 +30,7 @@ export default function Home() {
   useEffect(() => {
     let countdownTimer: NodeJS.Timeout;
 
-    if (countdown > 0 && shouldStartCountdown && !roundInProgress) {
+    if (countdown > 0 && shouldStartCountdown) {
       countdownTimer = setTimeout(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
@@ -88,6 +88,7 @@ export default function Home() {
   };
 
   function requestNFT() {
+    setShouldStartCountdown(false);
     if (currentRound < 10) {
       setCurrentRound((prevRound) => prevRound + 1); // Go to the next round
       nft
@@ -104,7 +105,7 @@ export default function Home() {
     } else {
       setGameStatus("finished");
       setCountdown(0);
-      setShouldStartCountdown(false);
+
       toast.success("Game finished!");
     }
   }
