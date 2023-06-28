@@ -22,6 +22,7 @@ export default function Home() {
     let countdownTimer: NodeJS.Timeout;
 
     if (countdown > 0) {
+      setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
       countdownTimer = setTimeout(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
