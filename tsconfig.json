@@ -28,7 +28,8 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs",
-    "src/pages/index.tsx.example"
+    "src/pages/index.tsx.example",
+    "src/server/twitch.ts"
   ],
   "exclude": ["node_modules", "tailwind.config.mjs"]
 }
