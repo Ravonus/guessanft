@@ -22,7 +22,7 @@ export default function Home() {
   const [shouldStartCountdown, setShouldStartCountdown] = useState(false);
   const [restart, setRestart] = useState(false);
 
-  const [lastIncorrect, setLastIncorrect] = useState();
+  const [lastIncorrect, setLastIncorrect] = useState("");
 
   const nft = api.nft.getRandomNFT.useMutation();
   const router = useRouter();
@@ -80,6 +80,7 @@ export default function Home() {
     } else {
       toast.error("Nope!");
       setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
+      setLastIncorrect(nftData.image);
     }
 
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 0.5 seconds before requesting a new NFT
@@ -109,7 +110,6 @@ export default function Home() {
   }
 
   const shareScoreOnTwitter = () => {
-    // I scored 10/10 in Azuki VS Elemental PFPguessr.com
     const correct = `${answers.correct}`;
     const incorrect = `${answers.incorrect}`;
 
@@ -117,9 +117,11 @@ export default function Home() {
 
     const scoreText = `I scored ${correct}/10 in Azuki VS Elemental ${appLink}`;
     const createdBy = "@R4vonus";
+
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      scoreText + `\n\n Created by ${createdBy}`
+      scoreText + `\n\n Created by ${createdBy}\n\n`
     )}`;
+
     window.open(tweetUrl);
   };
 
