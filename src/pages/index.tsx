@@ -22,6 +22,8 @@ export default function Home() {
   const [shouldStartCountdown, setShouldStartCountdown] = useState(false);
   const [restart, setRestart] = useState(false);
 
+  const [lastIncorrect, setLastIncorrect] = useState();
+
   const nft = api.nft.getRandomNFT.useMutation();
   const router = useRouter();
 
@@ -108,12 +110,12 @@ export default function Home() {
 
   const shareScoreOnTwitter = () => {
     // I scored 10/10 in Azuki VS Elemental PFPguessr.com
-    const correct = `Correct: ${answers.correct}`;
-    const incorrect = `Incorrect: ${answers.incorrect}`;
+    const correct = `${answers.correct}`;
+    const incorrect = `${answers.incorrect}`;
 
     const appLink = "https://pfpguessr.com";
 
-    const scoreText = `I scored ${correct}/${incorrect} in Azuki VS Elemental ${appLink}`;
+    const scoreText = `I scored ${correct}/10 in Azuki VS Elemental ${appLink}`;
     const createdBy = "@R4vonus";
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       scoreText + `\n\n Created by ${createdBy}`
