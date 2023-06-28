@@ -132,14 +132,25 @@ export default function Home() {
       <ToastContainer />
       <Head>
         <title>Guess the Collection</title>
-        <meta name="description" content="Guess the NFT collection" />
+        <meta name="description" content="PFPGuessr" />
         <link rel="icon" href="/favicon.ico" />
+
+        <meta property="og:title" content="PFPGuessr" />
+        <meta property="og:description" content="PFPGuessr" />
+        <meta property="og:image" content="/image.jpg" />
+        <meta property="og:image:alt" content="PFPGuessr" />
+        <meta property="og:url" content="URL of your website" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="PFPGuessr" />
+        <meta name="twitter:description" content="PFPGuessr" />
+        <meta name="twitter:image" content="/image.jpg" />
       </Head>
 
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
         <div className="container -mt-64 flex flex-col items-center justify-center gap-12 px-4 py-2">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            Guess the <span className="text-[hsl(220,80%,70%)]">NFT</span>
+            PFPGuess<span className="text-[hsl(220,80%,70%)]">r</span>
           </h1>
 
           <img
