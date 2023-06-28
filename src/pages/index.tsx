@@ -185,11 +185,19 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <img
-            alt="NFT"
-            src={nftData.image}
-            className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
-          />
+          {gameStatus === "notStarted" ? (
+            <img
+              alt="NFT"
+              src="/aore.png"
+              className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
+            />
+          ) : (
+            <img
+              alt="NFT"
+              src={nftData.image}
+              className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
+            />
+          )}
 
           {gameStatus === "notStarted" && (
             <button
