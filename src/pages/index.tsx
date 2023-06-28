@@ -118,8 +118,10 @@ export default function Home() {
     const scoreText = `I scored ${correct}/10 in Azuki VS Elemental ${appLink}`;
     const createdBy = "@R4vonus";
 
+    const hashtag = "#AzukiVsElemental";
+
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      scoreText + `\n\n Created by ${createdBy}`
+      scoreText + `\n\n Created by ${createdBy}\n ${hashtag}`
     )}`;
 
     window.open(tweetUrl);
