@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { api, type RouterOutputs } from "~/utils/api";
+import { useRouter } from "next/router";
 
 import { ToastContainer, toast } from "react-toastify";
 
@@ -17,6 +18,7 @@ export default function Home() {
   const [countdown, setCountdown] = useState(5);
 
   const nft = api.nft.getRandomNFT.useMutation();
+  const router = useRouter();
 
   useEffect(() => {
     let countdownTimer: NodeJS.Timeout;
@@ -80,6 +82,14 @@ export default function Home() {
       });
   }
 
+  const shareScoreOnTwitter = () => {
+    const scoreText = `My score in the Guess the NFT Collection game: Correct - ${answers.correct}, Incorrect - ${answers.incorrect}`;
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      scoreText
+    )}`;
+    window.open(tweetUrl);
+  };
+
   if (!nftData) return "Loading...";
 
   return (
@@ -125,6 +135,13 @@ export default function Home() {
           <div className="mt-4 text-3xl text-white">
             Time Remaining: {countdown} seconds
           </div>
+
+          <button
+            className="mt-8 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            onClick={shareScoreOnTwitter}
+          >
+            Share on Twitter
+          </button>
         </div>
 
         <div className="mt-5 flex flex-col items-center justify-center gap-4">
