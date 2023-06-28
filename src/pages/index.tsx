@@ -145,8 +145,7 @@ export default function Home() {
         />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:domain" content="pfpguessr.com" />
-        <meta name="twitter:url" content="https://pfpguessr.com/" />
+        <meta name="twitter:url" content="pfpguessr.com/" />
         <meta name="twitter:site" content="@R4vonus" />
         <meta name="twitter:title" content="Guess the PFP" />
         <meta name="twitter:description" content="PFPguessr" />
@@ -154,7 +153,6 @@ export default function Home() {
           name="twitter:image"
           content="https://pfpguessr.com/PFPguessr.png"
         />
-        <meta name="twitter:url" content={`https://pfpguessr.com/`} />
       </Head>
 
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
