@@ -1,3 +1,9 @@
+/**
+ * @author Chad Koslovsky <chad@technomnancy.it>
+ * @file Description
+ * @desc Created on 2023-06-29 12:55:50 am
+ * @copyright TechnomancyIT
+ */
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import axios, { AxiosResponse } from "axios";
@@ -43,33 +49,13 @@ const collections: Record<string, CollectionData> = {
   },
   Elementals: {
     address: "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e",
-    maxSupply: 5859,
+    maxSupply: 10500,
   },
 };
 
 interface NFTDataResponse {
   data: Array<NFTData>;
 }
-
-// const getRandomNFTFromBlockChain = async (collection: CollectionData) => {
-//   const randomID = Math.floor(Math.random() * collection.maxSupply);
-
-//   const contract = new ethers.Contract(
-//     collection.address,
-//     ["function tokenURI(uint256 tokenId) public view returns (string memory)"],
-//     provider as Signer
-//   );
-
-//   console.log(contract);
-
-//   try {
-//     console.log("Calling tokenURI", randomID);
-//     const tokenURI = await contract.tokenURI(randomID);
-//     console.log(tokenURI);
-//   } catch (err) {
-//     console.error("Error calling tokenURI: ", err);
-//   }
-// };
 
 interface NFTDataResponse {
   tokenId: string;
