@@ -319,6 +319,15 @@ export default function Home() {
           property="twitter:image"
           content="https://pfpguessr.com/pfp.png"
         />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://pfpguessr.com/" />
+        <meta name="twitter:title" content="PFPGuessr" />
+        <meta
+          name="twitter:description"
+          content="A quick game to test your NFT guessing skills."
+        />
+        <meta name="twitter:image" content="https://pfpguessr.com/pfp.png" />
       </Head>
 
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
@@ -354,7 +363,10 @@ export default function Home() {
               </div>
             )}
 
-            <h2 className=" text-2xl font-extrabold tracking-tight text-white sm:text-[2.5rem]">
+            <h2
+              id="score"
+              className=" text-2xl font-extrabold tracking-tight text-white sm:text-[2.5rem]"
+            >
               Score
             </h2>
             <div className=" flex gap-8">
@@ -389,7 +401,14 @@ export default function Home() {
               className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
             />
           )}
-
+          {gameStatus === "finished" && (
+            <button
+              className="-mt-8 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+              onClick={shareScoreOnTwitter}
+            >
+              Share on Twitter
+            </button>
+          )}
           {gameStatus === "notStarted" && (
             <>
               <button
@@ -399,6 +418,25 @@ export default function Home() {
                   //requestNFT();
                   setCountdown(defaultCount);
                   setShouldStartCountdown(true); // Start the countdown when the game starts
+                  //smooth scroll to id scroll and 5 px more
+
+                  const scroll = document.getElementById("score");
+                  const offset = -24;
+
+                  const bodyRect = document.body.getBoundingClientRect().top;
+
+                  const elementRect = scroll?.getBoundingClientRect().top;
+
+                  const elementPosition = elementRect
+                    ? elementRect - bodyRect
+                    : 0;
+
+                  const offsetPosition = elementPosition - offset;
+
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth",
+                  });
                 }}
               >
                 Start
@@ -408,7 +446,7 @@ export default function Home() {
 
           {gameStatus === "finished" && (
             <button
-              className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+              className="-mt-4 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
               onClick={() => {
                 setGameStatus("inProgress");
                 setCurrentRound(0);
@@ -416,6 +454,23 @@ export default function Home() {
                 setRoundInProgress(false);
                 setRestart(true);
                 setCountdown(defaultCount);
+                const scroll = document.getElementById("score");
+                const offset = -24;
+
+                const bodyRect = document.body.getBoundingClientRect().top;
+
+                const elementRect = scroll?.getBoundingClientRect().top;
+
+                const elementPosition = elementRect
+                  ? elementRect - bodyRect
+                  : 0;
+
+                const offsetPosition = elementPosition - offset;
+
+                window.scrollTo({
+                  top: offsetPosition,
+                  behavior: "smooth",
+                });
               }}
             >
               Restart
@@ -424,7 +479,7 @@ export default function Home() {
 
           {(gameStatus === "notStarted" || gameStatus === "finished") && (
             <select
-              className="-mt-5 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+              className="-mt-8 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
               onChange={(e) => setGameMode(e.target.value)}
             >
               <option value={gameModes.TIMER}>Timer Mode</option>
@@ -435,7 +490,7 @@ export default function Home() {
           {(gameStatus === "notStarted" || gameStatus === "finished") &&
             gameMode !== "STREAK" && (
               <select
-                className="-mt-5 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
+                className="-mt-8 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
                 onChange={(e) => setDifficulty(parseInt(e.target.value))}
               >
                 {!twitch ? (
@@ -500,16 +555,7 @@ export default function Home() {
             </>
           )}
 
-          {gameStatus === "finished" && (
-            <button
-              className="-mt-12 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-              onClick={shareScoreOnTwitter}
-            >
-              Share on Twitter
-            </button>
-          )}
-
-          <div className="text-white">
+          <div className="-mt-12 text-white md:mt-0">
             App created by{" "}
             <a
               href="https://twitter.com/R4vonus"
