@@ -530,36 +530,34 @@ export default function Home() {
             )}
 
           <div className="-mt-4 flex justify-center gap-4 text-white">
-            {gameStatus === "inProgress" &&
-              currentRound < 11 &&
-              defaultCount <= 24 && (
-                <>
-                  <button
-                    className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:-translate-x-2 hover:skew-y-3 hover:scale-110 hover:bg-purple-700"
-                    onClick={() => {
-                      handleGuess(
-                        "0xed5af388653567af2f388e6224dc7c4b3241c544"
-                      ).catch((err) => {
-                        console.log(err);
-                      });
-                    }}
-                  >
-                    Azuki
-                  </button>
-                  <button
-                    className="rounded bg-purple-600 px-4 font-bold text-white shadow-xl transition duration-500 hover:translate-x-2 hover:-skew-y-3 hover:scale-110 hover:bg-purple-700"
-                    onClick={() => {
-                      handleGuess(
-                        "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e"
-                      ).catch((err) => {
-                        console.log(err);
-                      });
-                    }}
-                  >
-                    Elemental
-                  </button>
-                </>
-              )}
+            {gameStatus === "inProgress" && defaultCount <= 24 && (
+              <>
+                <button
+                  className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:-translate-x-2 hover:skew-y-3 hover:scale-110 hover:bg-purple-700"
+                  onClick={() => {
+                    handleGuess(
+                      "0xed5af388653567af2f388e6224dc7c4b3241c544"
+                    ).catch((err) => {
+                      console.log(err);
+                    });
+                  }}
+                >
+                  Azuki
+                </button>
+                <button
+                  className="rounded bg-purple-600 px-4 font-bold text-white shadow-xl transition duration-500 hover:translate-x-2 hover:-skew-y-3 hover:scale-110 hover:bg-purple-700"
+                  onClick={() => {
+                    handleGuess(
+                      "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e"
+                    ).catch((err) => {
+                      console.log(err);
+                    });
+                  }}
+                >
+                  Elemental
+                </button>
+              </>
+            )}
           </div>
 
           {(gameMode === "TIMER" || twitch) && (
