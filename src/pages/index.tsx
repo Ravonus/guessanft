@@ -66,7 +66,7 @@ export default function Home() {
   useEffect(() => {
     if (!twitch) return;
 
-    setDefaultCount(30);
+    setDefaultCount(20);
 
     // Connect to the Socket.IO server
     setSocket(
@@ -134,7 +134,7 @@ export default function Home() {
     } else if (countdown === 0 && shouldStartCountdown && !roundInProgress) {
       // Timeout expired, request a new NFT
 
-      if (defaultCount > 24) {
+      if (defaultCount > 19) {
         //determine which one won
         const azuki = azukiVotes;
         const elemental = elementalVotes;
@@ -143,24 +143,24 @@ export default function Home() {
           azuki > elemental &&
           nftData?.contract === "0xed5af388653567af2f388e6224dc7c4b3241c544"
         ) {
-          setAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
           if (gameMode === gameModes.STREAK)
             handleGuess("0xed5af388653567af2f388e6224dc7c4b3241c544").catch(
               (err) => {
                 console.log(err);
               }
             );
+          else setAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
         } else if (
           azuki < elemental &&
           nftData?.contract === "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e"
         ) {
-          setAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
           if (gameMode === gameModes.STREAK)
-            handleGuess("0xed5af388653567af2f388e6224dc7c4b3241c544").catch(
+            handleGuess("0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e").catch(
               (err) => {
                 console.log(err);
               }
             );
+          else setAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
         } else {
           setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
           if (gameMode === gameModes.STREAK) {
@@ -509,32 +509,37 @@ export default function Home() {
           )}
 
           {(gameStatus === "notStarted" || gameStatus === "finished") &&
-            gameMode !== "STREAK" && (
+            gameMode !== "STREAK" &&
+            !twitch && (
               <select
                 className="-mt-8 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
                 onChange={(e) => setDifficulty(parseInt(e.target.value))}
               >
-                {!twitch ? (
-                  <>
-                    {" "}
-                    <option value="8">Easy</option>
-                    <option defaultChecked value="5" selected>
-                      Medium
-                    </option>
-                    <option value="1">Hard</option>
-                  </>
-                ) : (
-                  <option value="30">Twitch</option>
-                )}
+                <>
+                  <option value="8">Easy</option>
+                  <option defaultChecked value="5" selected>
+                    Medium
+                  </option>
+                  <option value="1">Hard</option>
+                </>
               </select>
             )}
 
           <div className="-mt-4 flex justify-center gap-4 text-white">
-            {gameStatus === "inProgress" && defaultCount <= 24 && (
+            {gameStatus === "inProgress" && (
               <>
                 <button
                   className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:-translate-x-2 hover:skew-y-3 hover:scale-110 hover:bg-purple-700"
                   onClick={() => {
+                    if (twitch) {
+                      toast.success(
+                        `${countdown} seconds to get your votes in!`,
+                        {
+                          position: "top-center",
+                        }
+                      );
+                      return;
+                    }
                     handleGuess(
                       "0xed5af388653567af2f388e6224dc7c4b3241c544"
                     ).catch((err) => {
@@ -547,6 +552,15 @@ export default function Home() {
                 <button
                   className="rounded bg-purple-600 px-4 font-bold text-white shadow-xl transition duration-500 hover:translate-x-2 hover:-skew-y-3 hover:scale-110 hover:bg-purple-700"
                   onClick={() => {
+                    if (twitch) {
+                      toast.success(
+                        `${countdown} seconds to get your votes in!`,
+                        {
+                          position: "top-center",
+                        }
+                      );
+                      return;
+                    }
                     handleGuess(
                       "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e"
                     ).catch((err) => {
