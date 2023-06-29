@@ -123,7 +123,7 @@ export default function Home() {
   }, [socket, userVotes, gameStatus]);
 
   useEffect(() => {
-    if (gameMode === gameModes.STREAK) return;
+    if (gameMode === gameModes.STREAK && !twitch) return;
 
     let countdownTimer: NodeJS.Timeout;
 
@@ -144,13 +144,31 @@ export default function Home() {
           nftData?.contract === "0xed5af388653567af2f388e6224dc7c4b3241c544"
         ) {
           setAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
+          if (gameMode === gameModes.STREAK)
+            handleGuess("0xed5af388653567af2f388e6224dc7c4b3241c544").catch(
+              (err) => {
+                console.log(err);
+              }
+            );
         } else if (
           azuki < elemental &&
           nftData?.contract === "0xb6a37b5d14d502c3ab0ae6f3a0e058bc9517786e"
         ) {
           setAnswers((prev) => ({ ...prev, correct: prev.correct + 1 }));
+          if (gameMode === gameModes.STREAK)
+            handleGuess("0xed5af388653567af2f388e6224dc7c4b3241c544").catch(
+              (err) => {
+                console.log(err);
+              }
+            );
         } else {
           setAnswers((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
+          if (gameMode === gameModes.STREAK) {
+            setGameStatus("finished");
+            setCountdown(0);
+            toast.success("Game finished!");
+            return;
+          }
         }
 
         setAzukiVotes(0);
@@ -544,9 +562,8 @@ export default function Home() {
               )}
           </div>
 
-          {gameMode === "TIMER" && (
+          {(gameMode === "TIMER" || twitch) && (
             <>
-              {" "}
               {gameStatus === "inProgress" && (
                 <div className="-mt-8 text-3xl text-white">
                   Time Remaining: {countdown}
