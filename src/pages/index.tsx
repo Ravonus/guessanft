@@ -59,7 +59,6 @@ export default function Home() {
 
   useEffect(() => {
     const totalVotes = azukiVotes + elementalVotes;
-    console.log(totalVotes);
     setAzukiWidth(totalVotes > 0 ? (azukiVotes / totalVotes) * 100 : 0);
     setElementalWidth(totalVotes > 0 ? (elementalVotes / totalVotes) * 100 : 0);
   }, [azukiVotes, elementalVotes]);
