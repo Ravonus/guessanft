@@ -136,23 +136,17 @@ export default function Home() {
   }, [socket, userVotes, gameStatus]);
 
   useEffect(() => {
-    console.log("I RUN", countdown);
-
     if (gameStatus !== "inProgress") return;
-
-    console.log("I RAN");
 
     if (gameMode === gameModes.STREAK && !twitch) return;
 
     let countdownTimer: NodeJS.Timeout;
 
     if (countdown > 0 && shouldStartCountdown) {
-      console.log("GO??");
       countdownTimer = setTimeout(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
     } else if (countdown < 1 && shouldStartCountdown && !roundInProgress) {
-      console.log("WTF", countdown);
       // Timeout expired, request a new NFT
 
       if (defaultCount > 19) {
