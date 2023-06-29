@@ -499,9 +499,11 @@ export default function Home() {
                 {!twitch ? (
                   <>
                     {" "}
-                    <option value="6">Easy</option>
-                    <option value="4">Medium</option>
-                    <option value="2">Hard</option>
+                    <option value="8">Easy</option>
+                    <option defaultChecked value="5" selected>
+                      Medium
+                    </option>
+                    <option value="1">Hard</option>
                   </>
                 ) : (
                   <option value="30">Twitch</option>
