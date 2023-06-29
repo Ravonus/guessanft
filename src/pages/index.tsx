@@ -135,7 +135,7 @@ export default function Home() {
       // Timeout expired, request a new NFT
 
       if (defaultCount > 24) {
-        //determine which one one
+        //determine which one won
         const azuki = azukiVotes;
         const elemental = elementalVotes;
 
@@ -193,10 +193,13 @@ export default function Home() {
   useEffect(() => {
     if (restart) requestNFT();
     setRestart(false);
-  }, [restart]);
+  }, [restart, requestNFT]);
 
   const handleGuess = async (collection: string) => {
-    if (currentRound > 10) {
+    if (currentRound > 9) {
+      setGameStatus("finished");
+      setCountdown(0);
+
       return;
     }
     if (!nftData) return;
