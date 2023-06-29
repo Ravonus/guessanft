@@ -208,21 +208,21 @@ export default function Home() {
     roundInProgress,
   ]);
 
-  if (nft.isIdle && !nftData) {
-    nft
-      .mutateAsync()
-      .then((data) => {
-        setNftData(data);
+  // if (nft.isIdle && !nftData) {
+  //   nft
+  //     .mutateAsync()
+  //     .then((data) => {
+  //       setNftData(data);
 
-        setTimeout(() => {
-          // Only 5 seconds to guess
-          //   setCountdown(defaultCount);
-        }, 5000);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  //       setTimeout(() => {
+  //         // Only 5 seconds to guess
+  //         //   setCountdown(defaultCount);
+  //       }, 5000);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
 
   useEffect(() => {
     if (restart) requestNFT();
@@ -230,7 +230,7 @@ export default function Home() {
   }, [restart]);
 
   const handleGuess = async (collection: string) => {
-    if (currentRound > 9 && gameMode === gameModes.TIMER) {
+    if (currentRound > 10 && gameMode === gameModes.TIMER) {
       setGameStatus("finished");
       setCountdown(0);
       setShouldStartCountdown(false);
@@ -258,6 +258,7 @@ export default function Home() {
         setGameStatus("finished");
         setCountdown(0);
         toast.success("Game finished!");
+        setNftData(undefined);
         return;
       }
     }
@@ -270,9 +271,10 @@ export default function Home() {
     if (gameStatus !== "inProgress") return;
     setShouldStartCountdown(false);
     if (
-      (currentRound < 9 && gameMode === gameModes.TIMER) ||
+      (currentRound < 10 && gameMode === gameModes.TIMER) ||
       gameMode === gameModes.STREAK
     ) {
+      console.log("IT RUNS", countdown, currentRound);
       setCurrentRound((prevRound) => prevRound + 1); // Go to the next round
       nft
         .mutateAsync()
@@ -291,6 +293,10 @@ export default function Home() {
       toast.success("Game finished!");
       setShouldStartCountdown(false);
       setRoundInProgress(false);
+
+      //set nftData.data undefined
+
+      setNftData(undefined);
     }
   }
 
@@ -426,7 +432,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          {gameStatus !== "inProgress" ? (
+          {!nftData?.image ? (
             <img
               alt="NFT"
               src="/aore.png"
