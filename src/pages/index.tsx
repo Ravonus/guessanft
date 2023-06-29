@@ -55,7 +55,7 @@ export default function Home() {
 
   //see if ?begin is in the url
 
-  const begin = router.query.begin ? router.query.begin : false;
+  const twitch = router.query.twitch ? router.query.twitch : false;
 
   useEffect(() => {
     const totalVotes = azukiVotes + elementalVotes;
@@ -65,9 +65,16 @@ export default function Home() {
   }, [azukiVotes, elementalVotes]);
 
   useEffect(() => {
-    if (!begin) return;
+    if (!twitch) return;
+
+    setDefaultCount(30);
+
     // Connect to the Socket.IO server
-    setSocket(io("https://guessrsocket-7c7704e9cd49.herokuapp.com/"));
+    setSocket(
+      io("http://localhost:1337", {
+        query: { twitch: twitch },
+      })
+    );
 
     // Handle the 'chat message' event
 
@@ -75,16 +82,16 @@ export default function Home() {
     return () => {
       socket?.disconnect();
     };
-  }, [begin]);
+  }, [twitch]);
 
   useEffect(() => {
     //first remvoe listener
 
     if (gameStatus !== "inProgress") return;
 
-    socket?.off("azuki");
+    socket?.off(twitch as string);
 
-    socket?.on("azuki", (msg: { user: string; isAzuki: boolean }) => {
+    socket?.on(twitch as string, (msg: { user: string; isAzuki: boolean }) => {
       //if user has already voted change it, if not add it
       //we need to check if userVotes[msg.user] exists (Not if its true or false)
 
@@ -104,7 +111,6 @@ export default function Home() {
           }
         }
       } else {
-        console.log("ELSED", userVotes);
         //if they haven't voted, add it
         setUserVotes((prev) => ({ ...prev, [msg.user]: msg.isAzuki }));
         if (msg.isAzuki) setAzukiVotes((prev) => prev + 1);
@@ -115,8 +121,6 @@ export default function Home() {
         `${msg.user} voted for ${msg.isAzuki ? "Azuki" : "Elemental"}`
       );
     });
-
-    console.log(socket);
   }, [socket, userVotes, gameStatus]);
 
   useEffect(() => {
@@ -131,7 +135,7 @@ export default function Home() {
     } else if (countdown === 0 && shouldStartCountdown && !roundInProgress) {
       // Timeout expired, request a new NFT
 
-      if (defaultCount === 45) {
+      if (defaultCount > 24) {
         //determine which one one
         const azuki = azukiVotes;
         const elemental = elementalVotes;
@@ -311,7 +315,7 @@ export default function Home() {
         <ToastContainer />
         <div className="container -mt-32 flex flex-col items-center justify-center gap-12 px-4 py-2">
           <div className="mt-5 flex flex-col items-center justify-center gap-4">
-            {begin && (
+            {twitch && (
               <div className="text-white">
                 <div style={{ display: "flex", width: "35vw", height: "20px" }}>
                   <div
@@ -424,17 +428,23 @@ export default function Home() {
                 className="-mt-5 rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
                 onChange={(e) => setDifficulty(parseInt(e.target.value))}
               >
-                <option value="6">Easy</option>
-                <option value="4">Medium</option>
-                <option value="2">Hard</option>
-                {begin && <option value="45">IRLAlpha</option>}
+                {!twitch ? (
+                  <>
+                    {" "}
+                    <option value="6">Easy</option>
+                    <option value="4">Medium</option>
+                    <option value="2">Hard</option>
+                  </>
+                ) : (
+                  <option value="30">Twitch</option>
+                )}
               </select>
             )}
 
           <div className="-mt-4 flex justify-center gap-4 text-white">
             {gameStatus === "inProgress" &&
               currentRound < 11 &&
-              defaultCount !== 45 && (
+              defaultCount <= 24 && (
                 <>
                   <button
                     className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:-translate-x-2 hover:skew-y-3 hover:scale-110 hover:bg-purple-700"
