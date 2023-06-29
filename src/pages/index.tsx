@@ -71,7 +71,7 @@ export default function Home() {
 
     // Connect to the Socket.IO server
     setSocket(
-      io("http://localhost:1337", {
+      io(process.env.NEXT_PUBLIC_SOCKET as string, {
         query: { twitch: twitch },
       })
     );
