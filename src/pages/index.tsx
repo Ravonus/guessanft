@@ -299,7 +299,7 @@ export default function Home() {
           property="og:description"
           content="A quick game to test your NFT guessing skills."
         />
-        <meta property="og:image" content="https://pfpguessr.com/img.png" />
+        <meta property="og:image" content="https://pfpguessr.com/pfp.png" />
 
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://pfpguessr.com/" />
@@ -310,7 +310,7 @@ export default function Home() {
         />
         <meta
           property="twitter:image"
-          content="https://pfpguessr.com/img.png"
+          content="https://pfpguessr.com/pfp.png"
         />
       </Head>
 
