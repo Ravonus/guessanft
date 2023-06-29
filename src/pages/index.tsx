@@ -199,6 +199,8 @@ export default function Home() {
     if (currentRound > 9 && gameMode === gameModes.TIMER) {
       setGameStatus("finished");
       setCountdown(0);
+      setShouldStartCountdown(false);
+      setCurrentRound(0);
 
       return;
     }
@@ -232,7 +234,7 @@ export default function Home() {
 
   function requestNFT() {
     setShouldStartCountdown(false);
-    if (currentRound < 10 && gameMode === gameModes.TIMER) {
+    if (currentRound < 9 && gameMode === gameModes.TIMER) {
       setCurrentRound((prevRound) => prevRound + 1); // Go to the next round
       nft
         .mutateAsync()
@@ -249,6 +251,8 @@ export default function Home() {
       setGameStatus("finished");
       setCountdown(0);
       toast.success("Game finished!");
+      setShouldStartCountdown(false);
+      setRoundInProgress(false);
     }
   }
 
@@ -355,19 +359,19 @@ export default function Home() {
             </h2>
             <div className=" flex gap-8">
               <div className="mx-10 flex flex-col items-center justify-center gap-2">
-                <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
-                  {answers.correct}
-                </span>
                 <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
                   Correct
                 </span>
+                <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
+                  {answers.correct}
+                </span>
               </div>
               <div className="mx-10 flex flex-col items-center justify-center gap-2">
-                <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
-                  {answers.incorrect}
-                </span>
                 <span className="text-xl font-extrabold tracking-tight text-white sm:text-[1.5rem]">
                   Incorrect
+                </span>
+                <span className="text-4xl font-extrabold tracking-tight text-white sm:text-[4rem]">
+                  {answers.incorrect}
                 </span>
               </div>
             </div>
