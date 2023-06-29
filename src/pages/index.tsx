@@ -193,10 +193,10 @@ export default function Home() {
   useEffect(() => {
     if (restart) requestNFT();
     setRestart(false);
-  }, [restart, requestNFT]);
+  }, [restart]);
 
   const handleGuess = async (collection: string) => {
-    if (currentRound > 9) {
+    if (currentRound > 9 && gameMode === gameModes.TIMER) {
       setGameStatus("finished");
       setCountdown(0);
 
@@ -232,7 +232,7 @@ export default function Home() {
 
   function requestNFT() {
     setShouldStartCountdown(false);
-    if (currentRound < 10) {
+    if (currentRound < 10 && gameMode === gameModes.TIMER) {
       setCurrentRound((prevRound) => prevRound + 1); // Go to the next round
       nft
         .mutateAsync()
