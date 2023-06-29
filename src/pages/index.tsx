@@ -234,7 +234,10 @@ export default function Home() {
 
   function requestNFT() {
     setShouldStartCountdown(false);
-    if (currentRound < 9 && gameMode === gameModes.TIMER) {
+    if (
+      (currentRound < 9 && gameMode === gameModes.TIMER) ||
+      gameMode === gameModes.STREAK
+    ) {
       setCurrentRound((prevRound) => prevRound + 1); // Go to the next round
       nft
         .mutateAsync()
@@ -247,7 +250,7 @@ export default function Home() {
         .catch((err) => {
           console.log(err);
         });
-    } else {
+    } else if (gameMode === gameModes.TIMER) {
       setGameStatus("finished");
       setCountdown(0);
       toast.success("Game finished!");
