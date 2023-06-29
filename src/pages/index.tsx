@@ -281,8 +281,6 @@ export default function Home() {
     window.open(tweetUrl);
   };
 
-  if (!nftData) return "Loading...";
-
   return (
     <>
       <Head>
@@ -380,7 +378,7 @@ export default function Home() {
           ) : (
             <img
               alt="NFT"
-              src={nftData.image}
+              src={nftData?.image}
               className="rounded border-2 border-purple-500 shadow-xl transition duration-500 hover:scale-110 hover:border-purple-600"
             />
           )}
