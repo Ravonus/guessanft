@@ -41,7 +41,7 @@ export default function Home() {
 
   const [userVotes, setUserVotes] = useState<UserVotes>({});
 
-  const [defaultCount, setDefaultCount] = useState(5);
+  const [defaultCount, setDefaultCount] = useState(0);
 
   const [lastIncorrect, setLastIncorrect] = useState("");
 
@@ -64,9 +64,22 @@ export default function Home() {
   }, [azukiVotes, elementalVotes]);
 
   useEffect(() => {
-    if (!twitch) return;
+    if (twitch) return;
+    setDefaultCount(5);
+    setCountdown(5);
+    setShouldStartCountdown(true);
+    setGameStatus("notStarted");
+  }, [gameMode, twitch]);
 
-    setDefaultCount(20);
+  useEffect(() => {
+    if (!twitch) {
+      setCountdown(5);
+      setDefaultCount(5);
+    } else {
+      setCountdown(20);
+      setDefaultCount(20);
+    }
+    setShouldStartCountdown(true);
 
     // Connect to the Socket.IO server
     setSocket(
@@ -123,15 +136,23 @@ export default function Home() {
   }, [socket, userVotes, gameStatus]);
 
   useEffect(() => {
+    console.log("I RUN", countdown);
+
+    if (gameStatus !== "inProgress") return;
+
+    console.log("I RAN");
+
     if (gameMode === gameModes.STREAK && !twitch) return;
 
     let countdownTimer: NodeJS.Timeout;
 
     if (countdown > 0 && shouldStartCountdown) {
+      console.log("GO??");
       countdownTimer = setTimeout(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
-    } else if (countdown === 0 && shouldStartCountdown && !roundInProgress) {
+    } else if (countdown < 1 && shouldStartCountdown && !roundInProgress) {
+      console.log("WTF", countdown);
       // Timeout expired, request a new NFT
 
       if (defaultCount > 19) {
@@ -185,6 +206,7 @@ export default function Home() {
       clearTimeout(countdownTimer);
     };
   }, [
+    twitch,
     countdown,
     shouldStartCountdown,
     defaultCount,
@@ -200,7 +222,7 @@ export default function Home() {
 
         setTimeout(() => {
           // Only 5 seconds to guess
-          setCountdown(defaultCount);
+          //   setCountdown(defaultCount);
         }, 5000);
       })
       .catch((err) => {
@@ -251,6 +273,7 @@ export default function Home() {
   };
 
   function requestNFT() {
+    if (gameStatus !== "inProgress") return;
     setShouldStartCountdown(false);
     if (
       (currentRound < 9 && gameMode === gameModes.TIMER) ||
@@ -436,9 +459,12 @@ export default function Home() {
                 className="rounded bg-purple-600 px-4 py-2 font-bold text-white shadow-xl transition duration-500 hover:scale-110 hover:bg-purple-700"
                 onClick={() => {
                   setGameStatus("inProgress");
-                  //requestNFT();
+                  setCurrentRound(0);
+                  setAnswers({ correct: 0, incorrect: 0 });
+                  setRoundInProgress(false);
+                  setRestart(true);
                   setCountdown(defaultCount);
-                  setShouldStartCountdown(true); // Start the countdown when the game starts
+                  //  requestNFT();
                   //smooth scroll to id scroll and 5 px more
 
                   const scroll = document.getElementById("score");
