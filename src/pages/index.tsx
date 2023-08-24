@@ -344,16 +344,16 @@ export default function Home() {
         />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://pfpguessr.com/" />
+        <meta property="og:url" content="https://azuki.pfpguessr.com/" />
         <meta property="og:title" content="PFPGuessr" />
         <meta
           property="og:description"
           content="A quick game to test your NFT guessing skills."
         />
-        <meta property="og:image" content="https://pfpguessr.com/pfp.png" />
+        <meta property="og:image" content="https://azuki.pfpguessr.com/pfp.png" />
 
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://pfpguessr.com/" />
+        <meta property="twitter:url" content="https://azuki.pfpguessr.com/" />
         <meta property="twitter:title" content="PFPGuessr" />
         <meta
           property="twitter:description"
@@ -361,17 +361,17 @@ export default function Home() {
         />
         <meta
           property="twitter:image"
-          content="https://pfpguessr.com/pfp.png"
+          content="https://azuki.pfpguessr.com/pfp.png"
         />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:url" content="https://pfpguessr.com/" />
+        <meta name="twitter:url" content="https://azuki.pfpguessr.com/" />
         <meta name="twitter:title" content="PFPGuessr" />
         <meta
           name="twitter:description"
           content="A quick game to test your NFT guessing skills."
         />
-        <meta name="twitter:image" content="https://pfpguessr.com/pfp.png" />
+        <meta name="twitter:image" content="https://azuki.pfpguessr.com/pfp.png" />
       </Head>
 
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e021d] to-[#15162c]">
